@@ -41,10 +41,9 @@ extension WasmParser {
         unimplemented()
     }
     
-    func unreachable() -> Instr {
-        return .unreachable
-    }
+
     func buildOpcodeTable() {
+        // MARK: Control Instructions
         opcodeTable[0x00] = opcode0(.unreachable)
         opcodeTable[0x01] = opcode0(.nop)
         opcodeTable[0x02] = {
@@ -98,11 +97,15 @@ extension WasmParser {
         opcodeTable[0x10] = opcode1(Instr.call, nonterminal: funcidx)
         opcodeTable[0x11] = {
             let x = try self.typeidx()
-            self.nextByte(mustBeOneOf: [0x00], errorMessage: "instr: call_indirect (opcode 0x11)")
+            try self.nextByte(mustBeOneOf: [0x00], errorMessage: "instr: call_indirect (opcode 0x11)")
             return .callIndirect(x)
         }
         
-
+        // MARK: Parametric Instructions
+        opcodeTable[0x1A] = opcode0(.drop)
+        opcodeTable[0x1B] = opcode0(.select)
+        
+        
         
     }
     

@@ -85,11 +85,15 @@ public struct TypeIdx {
 }
 
 public enum Instr {
+    // MARK: Control Instructions
     case unreachable, nop, `return`
     case block(BlockType, [Instr]), loop(BlockType, [Instr]), `if`(BlockType, [Instr], [Instr])
     case br(LabelIndex), brIf(LabelIndex), brTable([LabelIndex], LabelIndex)
     case call(FuncIdx)
     case callIndirect(TypeIdx)
+    
+    // MARK: Parametric Instructions
+    case drop, select
 }
 
 public struct Module {
