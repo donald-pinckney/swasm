@@ -84,6 +84,14 @@ public struct TypeIdx {
     
 }
 
+public struct LocalIdx {
+    
+}
+
+public struct GlobalIdx {
+    
+}
+
 public enum Instr {
     // MARK: Control Instructions
     case unreachable, nop, `return`
@@ -94,6 +102,10 @@ public enum Instr {
     
     // MARK: Parametric Instructions
     case drop, select
+    
+    // MARK: Variable Instructions
+    case localGet(LocalIdx), localSet(LocalIdx), localTee(LocalIdx)
+    case globalGet(GlobalIdx), globalSet(GlobalIdx)
 }
 
 public struct Module {

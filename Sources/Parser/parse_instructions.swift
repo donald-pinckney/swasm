@@ -40,6 +40,13 @@ extension WasmParser {
     func typeidx() throws -> TypeIdx {
         unimplemented()
     }
+    func localidx() throws -> LocalIdx {
+        unimplemented()
+    }
+    func globalidx() throws -> GlobalIdx {
+        unimplemented()
+    }
+    
     
 
     func buildOpcodeTable() {
@@ -105,8 +112,12 @@ extension WasmParser {
         opcodeTable[0x1A] = opcode0(.drop)
         opcodeTable[0x1B] = opcode0(.select)
         
-        
-        
+        // MARK: Variable Instructions
+        opcodeTable[0x20] = opcode1(Instr.localGet, nonterminal: localidx)
+        opcodeTable[0x21] = opcode1(Instr.localSet, nonterminal: localidx)
+        opcodeTable[0x22] = opcode1(Instr.localTee, nonterminal: localidx)
+        opcodeTable[0x23] = opcode1(Instr.globalGet, nonterminal: globalidx)
+        opcodeTable[0x24] = opcode1(Instr.globalSet, nonterminal: globalidx)
     }
     
     func instr() throws -> Instr {
