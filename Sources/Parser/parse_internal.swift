@@ -202,6 +202,10 @@ class InternalParser {
         return GlobalType(mut: m, valType: t)
     }
     
+    // MARK: Instructions
+    
+    
+    
     func module() throws -> Module {
         unimplemented()
     }
