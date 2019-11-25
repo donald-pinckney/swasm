@@ -7,6 +7,10 @@
 
 import Foundation
 
+public enum ValueType {
+    case i32, i64, f32, f64
+}
+
 public struct Module {
     let x: Int
 }
@@ -37,6 +41,8 @@ public struct InMemoryBytes: ByteStream {
 
 public enum ParseError: Error {
     case expectedByte
+    case utf8DecodingFailed(bytes: [UInt8])
+    case invalidValueType(byte: UInt8)
 }
 
 public func parseModule(stream: ByteStream) throws -> Module {

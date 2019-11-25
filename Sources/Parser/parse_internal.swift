@@ -40,8 +40,10 @@ internal class InternalParser {
         self.stream = stream
     }
     
+    // MARK: Values
+    
     func byte() throws -> UInt8 {
-        return try stream.expectByte()
+        try stream.expectByte()
     }
     
     func u_variable_len() throws -> UInt64 {
@@ -97,6 +99,32 @@ internal class InternalParser {
         return xs
     }
     
+    func name() throws -> String {
+        let utf8 = try vec(nonterminal: byte)
+        if let s = String(bytes: utf8, encoding: .utf8) {
+            return s
+        } else {
+            throw ParseError.utf8DecodingFailed(bytes: utf8)
+        }
+    }
+    
+    // MARK: Types
+    
+    func valtype() throws -> ValueType {
+        switch try byte() {
+        case 0x7F:
+            return .i32
+        case 0x7E:
+            return .i64
+        case 0x7D:
+            return .f32
+        case 0x7C:
+            return .f64
+        case let b:
+            throw ParseError.invalidValueType(byte: b)
+        }
+    }
+    
     
     func module() throws -> Module {
 //        parseVector(nonterminal: parseByte)
@@ -104,11 +132,3 @@ internal class InternalParser {
     }
 }
 
-//func parseByte(stream: ByteStream) -> UInt8 {
-//    return
-//}
-//
-//
-//func parseVector<T>(stream: ByteStream, nonterminal: () -> T) -> [T] {
-//    fatalError("unimplemented")
-//}
