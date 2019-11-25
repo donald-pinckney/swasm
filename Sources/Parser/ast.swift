@@ -92,6 +92,10 @@ public struct GlobalIdx {
     
 }
 
+public struct MemArg {
+    
+}
+
 public enum Instr {
     // MARK: Control Instructions
     case unreachable, nop, `return`
@@ -106,6 +110,9 @@ public enum Instr {
     // MARK: Variable Instructions
     case localGet(LocalIdx), localSet(LocalIdx), localTee(LocalIdx)
     case globalGet(GlobalIdx), globalSet(GlobalIdx)
+    
+    // MARK: Memory Instructions
+    case i32Load(MemArg), i64Load(MemArg), f32Load(MemArg), f64Load(MemArg), i32Load8_s(MemArg), i32Load8_u(MemArg), i32Load16_s(MemArg), i32Load16_u(MemArg), i64Load8_s(MemArg), i64Load8_u(MemArg), i64Load16_s(MemArg), i64Load16_u(MemArg), i64Load32_s(MemArg), i64Load32_u(MemArg), i32Store(MemArg), i64Store(MemArg), f32Store(MemArg), f64Store(MemArg), i32Store8(MemArg), i32Store16(MemArg), i64Store8(MemArg), i64Store16(MemArg), i64Store32(MemArg), memorySize, memoryGrow
 }
 
 public struct Module {
