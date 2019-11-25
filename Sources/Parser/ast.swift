@@ -72,6 +72,26 @@ public struct GlobalType {
     let valType: ValueType
 }
 
+public struct LabelIndex {
+    
+}
+
+public struct FuncIdx {
+    
+}
+
+public struct TypeIdx {
+    
+}
+
+public enum Instr {
+    case unreachable, nop, `return`
+    case block(BlockType, [Instr]), loop(BlockType, [Instr]), `if`(BlockType, [Instr], [Instr])
+    case br(LabelIndex), brIf(LabelIndex), brTable([LabelIndex], LabelIndex)
+    case call(FuncIdx)
+    case callIndirect(TypeIdx)
+}
+
 public struct Module {
     let x: Int
 }

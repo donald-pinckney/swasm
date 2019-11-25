@@ -20,8 +20,8 @@ extension WasmParser {
     
     func functype() throws -> FuncType {
         try nextByte(mustBeOneOf: [0x60])
-        let fromTypes = try vec(nonterminal: valtype)
-        let toTypes = try vec(nonterminal: valtype)
+        let fromTypes = try vec(nonterminal: valtype)()
+        let toTypes = try vec(nonterminal: valtype)()
         return FuncType(from: fromTypes, to: toTypes)
     }
     

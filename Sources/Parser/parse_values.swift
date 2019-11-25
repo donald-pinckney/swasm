@@ -72,17 +72,10 @@ extension WasmParser {
         Double(bitPattern: try stream.expect8())
     }
     
-    func vec<T>(nonterminal: () throws -> T) throws -> [T] {
-        let n = try u32()
-        var xs: [T] = []
-        for _ in 0..<n {
-            xs.append(try nonterminal())
-        }
-        return xs
-    }
+    
     
     func name() throws -> String {
-        let utf8 = try vec(nonterminal: byte)
+        let utf8 = try vec(nonterminal: byte)()
         if let s = String(bytes: utf8, encoding: .utf8) {
             return s
         } else {

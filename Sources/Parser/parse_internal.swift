@@ -10,9 +10,11 @@ import Foundation
 
 final class WasmParser {
     var stream: ByteStream
+    var opcodeTable: [InstrProduction?] = [InstrProduction?](repeating: nil, count: 0xFF + 1)
     
     init(stream: ByteStream) {
         self.stream = stream
+        buildOpcodeTable()
     }
         
     @discardableResult func nextByte(mustBeOneOf: Set<UInt8>, errorMessage: String = #function) throws -> UInt8 {
@@ -26,6 +28,17 @@ final class WasmParser {
     
     func byte() throws -> UInt8 {
         try stream.expectByte()
+    }
+    
+    func vec<T>(nonterminal: @escaping () throws -> T) -> (() throws -> [T]) {
+        return {
+            let n = try self.u32()
+            var xs: [T] = []
+            for _ in 0..<n {
+                xs.append(try nonterminal())
+            }
+            return xs
+        }
     }
 
     // Values are parsed in parse_values.swift

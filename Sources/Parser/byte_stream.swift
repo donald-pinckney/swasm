@@ -9,6 +9,7 @@ import Foundation
 
 public protocol ByteStream {
     mutating func nextByte() -> UInt8?
+    func peekByte() -> UInt8?
 //    func hasMoreBytes() -> Bool
 }
 
@@ -24,6 +25,10 @@ public struct InMemoryBytes: ByteStream {
         } else {
             return nil
         }
+    }
+    
+    public func peekByte() -> UInt8? {
+        return bytes.first
     }
     
 //    public func hasMoreBytes() -> Bool {
