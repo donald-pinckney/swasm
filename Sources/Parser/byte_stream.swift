@@ -31,3 +31,28 @@ public struct InMemoryBytes: ByteStream {
 //    }
 }
 
+
+
+extension ByteStream {
+    mutating func expectByte() throws -> UInt8 {
+        if let b = self.nextByte() {
+            return b
+        } else {
+            throw ParseError.unexpectedEof
+        }
+    }
+    
+    mutating func expect4() throws -> UInt32 {
+        let b1 = UInt32(try expectByte())
+        let b2 = UInt32(try expectByte())
+        let b3 = UInt32(try expectByte())
+        let b4 = UInt32(try expectByte())
+        return b1 | (b2 << 8) | (b3 << 16) | (b4 << 24)
+    }
+    
+    mutating func expect8() throws -> UInt64 {
+        let b1 = UInt64(try expect4())
+        let b2 = UInt64(try expect4())
+        return b1 | (b2 << 32)
+    }
+}
