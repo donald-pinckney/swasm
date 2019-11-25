@@ -13,7 +13,7 @@ extension ByteStream {
         if let b = self.nextByte() {
             return b
         } else {
-            throw ParseError.expectedByte
+            throw ParseError.unexpectedEof
         }
     }
     
@@ -33,11 +33,22 @@ extension ByteStream {
 }
 
 
-internal class InternalParser {
+class InternalParser {
     var stream: ByteStream
     
     init(stream: ByteStream) {
         self.stream = stream
+    }
+    
+    // MARK: Helpers
+    
+    @discardableResult func nextByte(mustBeOneOf: Set<UInt8>, errorMessage: String = #function) throws -> UInt8 {
+        let b = try byte()
+        if !mustBeOneOf.contains(b) {
+            throw ParseError.expectedByte(received: b, wanted: mustBeOneOf, message: errorMessage)
+        } else {
+            return b
+        }
     }
     
     // MARK: Values
@@ -60,7 +71,8 @@ internal class InternalParser {
         return result
     }
     
-    func s_variable_len(size: Int) throws -> Int64 {
+    func s_variable_len() throws -> Int64 {
+        let size = 64
         var result: Int64 = 0;
         var shift = 0;
         
@@ -78,8 +90,25 @@ internal class InternalParser {
         return result
     }
     
-    func i_variable_len(size: Int) throws -> Int64 {
-        try s_variable_len(size: size)
+    func u32() throws -> UInt32 {
+        UInt32(try u_variable_len())
+    }
+    func u64() throws -> UInt64 {
+        UInt64(try u_variable_len())
+    }
+    
+    func s32() throws -> Int32 {
+        Int32(try s_variable_len())
+    }
+    func s64() throws -> Int64 {
+        Int64(try s_variable_len())
+    }
+    
+    func i32() throws -> Int32 {
+        try s32()
+    }
+    func i64() throws -> Int64 {
+        try s64()
     }
     
     func f32() throws -> Float {
@@ -91,7 +120,7 @@ internal class InternalParser {
     }
     
     func vec<T>(nonterminal: () throws -> T) throws -> [T] {
-        let n = try u_variable_len()
+        let n = try u32()
         var xs: [T] = []
         for _ in 0..<n {
             xs.append(try nonterminal())
@@ -111,24 +140,72 @@ internal class InternalParser {
     // MARK: Types
     
     func valtype() throws -> ValueType {
-        switch try byte() {
-        case 0x7F:
-            return .i32
-        case 0x7E:
-            return .i64
-        case 0x7D:
-            return .f32
-        case 0x7C:
-            return .f64
-        case let b:
-            throw ParseError.invalidValueType(byte: b)
+        try ValueType(try byte())
+    }
+    
+    func blocktype() throws -> BlockType {
+        try BlockType(try byte())
+    }
+    
+    func functype() throws -> FuncType {
+        try nextByte(mustBeOneOf: [0x60])
+        let fromTypes = try vec(nonterminal: valtype)
+        let toTypes = try vec(nonterminal: valtype)
+        return FuncType(from: fromTypes, to: toTypes)
+    }
+    
+    func limits() throws -> Limits {
+        let b = try nextByte(mustBeOneOf: [0x00, 0x01])
+        
+        let min = try u32()
+        
+        switch b {
+        case 0x00:
+            return .Min(min)
+        case 0x01:
+            return .MinMax(min, try u32())
+        default:
+            impossible()
         }
     }
     
+    func memtype() throws -> MemType {
+        MemType(limits: try limits())
+    }
+    
+    func elemtype() throws -> ElemType {
+        try nextByte(mustBeOneOf: [0x70])
+        return .funcref
+    }
+    
+    func tabletype() throws -> TableType {
+        let et = try elemtype()
+        let lim = try limits()
+        return TableType(limits: lim, elemType: et)
+    }
+    
+    func mut() throws -> Mut {
+        let b = try nextByte(mustBeOneOf: [0x00, 0x01])
+        switch b {
+        case 0x00:
+            return .const
+        case 0x01:
+            return .var
+        default:
+            impossible()
+        }
+    }
+    
+    func globaltype() throws -> GlobalType {
+        let t = try valtype()
+        let m = try mut()
+        return GlobalType(mut: m, valType: t)
+    }
     
     func module() throws -> Module {
-//        parseVector(nonterminal: parseByte)
-        fatalError("unimplemented")
+        unimplemented()
     }
+    
+    
 }
 

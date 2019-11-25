@@ -19,16 +19,16 @@ final class parserTests: XCTestCase {
     }
     
     func testSignedInts() throws {
-        let s_var_len = { (p: InternalParser) -> () throws -> Int64 in
-            return { () -> Int64 in
-                return try p.s_variable_len(size: 64)
-            }
-        }
+//        let s_var_len = { (p: InternalParser) -> () throws -> Int64 in
+//            return { () -> Int64 in
+//                return try p.s_variable_len()
+//            }
+//        }
         
-        XCTAssertEqual(doParse([0xc0, 0xbb, 0x78], nonterminal: s_var_len), -123456)
-        XCTAssertEqual(doParse([0x7e], nonterminal: s_var_len), -2)
-        XCTAssertEqual(doParse([0xfe, 0x7f], nonterminal: s_var_len), -2)
-        XCTAssertEqual(doParse([0xfe, 0xff, 0x7f], nonterminal: s_var_len), -2)
+        XCTAssertEqual(doParse([0xc0, 0xbb, 0x78], nonterminal: InternalParser.s_variable_len), -123456)
+        XCTAssertEqual(doParse([0x7e], nonterminal: InternalParser.s_variable_len), -2)
+        XCTAssertEqual(doParse([0xfe, 0x7f], nonterminal: InternalParser.s_variable_len), -2)
+        XCTAssertEqual(doParse([0xfe, 0xff, 0x7f], nonterminal: InternalParser.s_variable_len), -2)
     }
     
     func test_f32() throws {
