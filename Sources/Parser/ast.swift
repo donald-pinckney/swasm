@@ -129,8 +129,10 @@ public enum Instr {
     case f32Convert_i32_s, f32Convert_i32_u, f32Convert_i64_s, f32Convert_i64_u, f32Demote_f64
     case f64Convert_i32_s, f64Convert_i32_u, f64Convert_i64_s, f64Convert_i64_u, f64Promote_f32
     case i32Reinterpret_f32, i64Reinterpret_f64, f32Reinterpret_i32, f64Reinterpret_i64
+}
 
-
+public struct Expr {
+    let instrs: [Instr]
 }
 
 public struct Module {

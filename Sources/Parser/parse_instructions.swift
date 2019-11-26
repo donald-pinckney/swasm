@@ -320,4 +320,14 @@ extension WasmParser {
         
         return try production()
     }
+    
+    func expr() throws -> Expr {
+        var instrs: [Instr] = []
+        while self.stream.peekByte() != 0x0B {
+            instrs.append(try self.instr())
+        }
+        try! self.nextByte(mustBeOneOf: [0x0B], errorMessage: "expr")
+        
+        return Expr(instrs: instrs)
+    }
 }
