@@ -113,6 +113,24 @@ public enum Instr {
     
     // MARK: Memory Instructions
     case i32Load(MemArg), i64Load(MemArg), f32Load(MemArg), f64Load(MemArg), i32Load8_s(MemArg), i32Load8_u(MemArg), i32Load16_s(MemArg), i32Load16_u(MemArg), i64Load8_s(MemArg), i64Load8_u(MemArg), i64Load16_s(MemArg), i64Load16_u(MemArg), i64Load32_s(MemArg), i64Load32_u(MemArg), i32Store(MemArg), i64Store(MemArg), f32Store(MemArg), f64Store(MemArg), i32Store8(MemArg), i32Store16(MemArg), i64Store8(MemArg), i64Store16(MemArg), i64Store32(MemArg), memorySize, memoryGrow
+    
+    // MARK: Numeric Instructions
+    case i32Const(Int32), i64Const(Int64), f32Const(Float), f64Const(Double)
+    case i32Eqz, i32Eq, i32Ne, i32Lt_s, i32Lt_u, i32Gt_s, i32Gt_u, i32Le_s, i32Le_u, i32Ge_s, i32Ge_u
+    case i64Eqz, i64Eq, i64Ne, i64Lt_s, i64Lt_u, i64Gt_s, i64Gt_u, i64Le_s, i64Le_u, i64Ge_s, i64Ge_u
+    case f32Eq, f32Ne, f32Lt, f32Gt, f32Le, f32Ge
+    case f64Eq, f64Ne, f64Lt, f64Gt, f64Le, f64Ge
+    case i32Clz, i32Ctz, i32Popcnt, i32Add, i32Sub, i32Mul, i32Div_s, i32Div_u, i32Rem_s, i32Rem_u, i32And, i32Or, i32Xor, i32Shl, i32Shr_s, i32Shr_u, i32Rotl, i32Rotr
+    case i64Clz, i64Ctz, i64Popcnt, i64Add, i64Sub, i64Mul, i64Div_s, i64Div_u, i64Rem_s, i64Rem_u, i64And, i64Or, i64Xor, i64Shl, i64Shr_s, i64Shr_u, i64Rotl, i64Rotr
+    case f32Abs, f32Neg, f32Ceil, f32Floor, f32Trunc, f32Nearest, f32Sqrt, f32Add, f32Sub, f32Mul, f32Div, f32Min, f32Max, f32Copysign
+    case f64Abs, f64Neg, f64Ceil, f64Floor, f64Trunc, f64Nearest, f64Sqrt, f64Add, f64Sub, f64Mul, f64Div, f64Min, f64Max, f64Copysign
+    case i32Wrap_i64, i32Trunc_f32_s, i32Trunc_f32_u, i32Trunc_f64_s, i32Trunc_f64_u
+    case i64Extend_i32_s, i64Extend_i32_u, i64Trunc_f32_s, i64Trunc_f32_u, i64Trunc_f64_s, i64Trunc_f64_u
+    case f32Convert_i32_s, f32Convert_i32_u, f32Convert_i64_s, f32Convert_i64_u, f32Demote_f64
+    case f64Convert_i32_s, f64Convert_i32_u, f64Convert_i64_s, f64Convert_i64_u, f64Promote_f32
+    case i32Reinterpret_f32, i64Reinterpret_f64, f32Reinterpret_i32, f64Reinterpret_i64
+
+
 }
 
 public struct Module {
