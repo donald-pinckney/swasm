@@ -39,5 +39,8 @@ final class parserTests: XCTestCase {
 
     static var allTests = [
         ("testUnsignedInts", testUnsignedInts),
+        ("testSignedInts", testSignedInts),
+        ("test_f32", test_f32),
+
     ]
 }
