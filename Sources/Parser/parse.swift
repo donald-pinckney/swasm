@@ -12,6 +12,7 @@ public enum ParseError: Error {
     case expectedByte(received: UInt8, wanted: Set<UInt8>, message: String?)
     case utf8DecodingFailed(bytes: [UInt8])
     case invalidValueType(byte: UInt8)
+    case invalidOpcode(opcodeByte: UInt8)
 }
 
 public func parseModule(stream: ByteStream) throws -> Result<Module, ParseError> {

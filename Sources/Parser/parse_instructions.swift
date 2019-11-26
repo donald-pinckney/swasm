@@ -312,6 +312,12 @@ extension WasmParser {
     }
     
     func instr() throws -> Instr {
-        unimplemented()
+        let opcodeByte = try byte()
+        
+        guard let production = opcodeTable[Int(opcodeByte)] else {
+            throw ParseError.invalidOpcode(opcodeByte: opcodeByte)
+        }
+        
+        return try production()
     }
 }
