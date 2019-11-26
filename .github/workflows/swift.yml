@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   test:
-    name: Test Swasm on ${{ matrix.os }}
+    name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
