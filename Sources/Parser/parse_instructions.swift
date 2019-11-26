@@ -52,7 +52,7 @@ extension WasmParser {
             while self.stream.peekByte() != 0x0B {
                 instrs.append(try self.instr())
             }
-            try! self.nextByte(mustBeOneOf: [0x0B], errorMessage: "instr: block")
+            try! self.nextByte(mustBe: 0x0B, errorMessage: "instr: block")
             return .block(rt, instrs)
         }
         opcodeTable[0x03] = {
@@ -61,7 +61,7 @@ extension WasmParser {
             while self.stream.peekByte() != 0x0B {
                 instrs.append(try self.instr())
             }
-            try! self.nextByte(mustBeOneOf: [0x0B], errorMessage: "instr: loop")
+            try! self.nextByte(mustBe: 0x0B, errorMessage: "instr: loop")
             return .loop(rt, instrs)
         }
         opcodeTable[0x04] = {
@@ -84,7 +84,7 @@ extension WasmParser {
                 while self.stream.peekByte() != 0x0B {
                     elseInstrs.append(try self.instr())
                 }
-                try! self.nextByte(mustBeOneOf: [0x0B], errorMessage: "instr: loop")
+                try! self.nextByte(mustBe: 0x0B, errorMessage: "instr: loop")
                 return .if(rt, instrs, elseInstrs)
             default:
                 impossible()
@@ -97,7 +97,7 @@ extension WasmParser {
         opcodeTable[0x10] = opcode1(Instr.call, nonterminal: funcidx)
         opcodeTable[0x11] = {
             let x = try self.typeidx()
-            try self.nextByte(mustBeOneOf: [0x00], errorMessage: "instr: call_indirect (opcode 0x11)")
+            try self.nextByte(mustBe: 0x00, errorMessage: "instr: call_indirect (opcode 0x11)")
             return .callIndirect(x)
         }
         
@@ -145,11 +145,11 @@ extension WasmParser {
         opcodeTable[0x3D] = opcode_memarg(Instr.i64Store16)
         opcodeTable[0x3E] = opcode_memarg(Instr.i64Store32)
         opcodeTable[0x3F] = {
-            try self.nextByte(mustBeOneOf: [0x00])
+            try self.nextByte(mustBe: 0x00)
             return .memorySize
         }
         opcodeTable[0x40] = {
-            try self.nextByte(mustBeOneOf: [0x00])
+            try self.nextByte(mustBe: 0x00)
             return .memoryGrow
         }
 
@@ -314,7 +314,7 @@ extension WasmParser {
         while self.stream.peekByte() != 0x0B {
             instrs.append(try self.instr())
         }
-        try! self.nextByte(mustBeOneOf: [0x0B], errorMessage: "expr")
+        try! self.nextByte(mustBe: 0x0B, errorMessage: "expr")
         
         return Expr(instrs: instrs)
     }

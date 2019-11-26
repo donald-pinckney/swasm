@@ -10,7 +10,8 @@ import Foundation
 public protocol ByteStream {
     mutating func nextByte() -> UInt8?
     func peekByte() -> UInt8?
-//    func hasMoreBytes() -> Bool
+    func hasMoreBytes() -> Bool
+    mutating func skipBytes(count: UInt32)
 }
 
 public struct InMemoryBytes: ByteStream {
@@ -27,13 +28,19 @@ public struct InMemoryBytes: ByteStream {
         }
     }
     
+    public mutating func skipBytes(count: UInt32) {
+        bytes.removeFirst(Int(count))
+    }
+    
     public func peekByte() -> UInt8? {
         return bytes.first
     }
     
-//    public func hasMoreBytes() -> Bool {
-//        return bytes.count > 0
-//    }
+    public func hasMoreBytes() -> Bool {
+        return bytes.count > 0
+    }
+    
+    
 }
 
 

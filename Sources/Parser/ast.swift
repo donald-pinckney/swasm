@@ -138,6 +138,40 @@ public struct Expr {
     let instrs: [Instr]
 }
 
+enum ImportDescription {
+    case Func(TypeIdx), Table(TableType), Mem(MemType), Global(GlobalType)
+}
+struct Import {
+    let moduleName: String
+    let name: String
+    let importDescription: ImportDescription
+}
+
+enum ExportDescription {
+    case Func(FuncIdx), Table(TableIdx), Mem(MemIdx), Global(GlobalIdx)
+}
+struct Export {
+    let name: String
+    let exportDescription: ExportDescription
+}
+
+
+struct Function {
+    let type: TypeIdx
+    let locals: [ValueType]
+    let body: Expr
+}
+
+
 public struct Module {
-    let x: Int
+    let types: [FuncType]
+    let funcs: [Function]
+    let tables: [TableType]
+    let mems: [MemType]
+    let globals: [(type: GlobalType, init: Expr)]
+    let elems: [(table: TableIdx, offset: Expr, init: [FuncIdx])]
+    let data: [(data: MemIdx, offset: Expr, init: [UInt8])]
+    let start: FuncIdx?
+    let imports: [Import]
+    let exports: [Export]
 }

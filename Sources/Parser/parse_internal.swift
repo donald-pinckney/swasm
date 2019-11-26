@@ -26,6 +26,15 @@ final class WasmParser {
         }
     }
     
+    @discardableResult func nextByte(mustBe: UInt8, errorMessage: String = #function) throws -> UInt8 {
+        let b = try byte()
+        if b != mustBe {
+            throw ParseError.expectedByte(received: b, wanted: [mustBe], message: errorMessage)
+        } else {
+            return b
+        }
+    }
+    
     func byte() throws -> UInt8 {
         try stream.expectByte()
     }
@@ -44,10 +53,7 @@ final class WasmParser {
     // Values are parsed in parse_values.swift
     // Types are parsed in parse_types.swift
     // Instructions are parsed in parse_instructions.swift
-    
-    func module() throws -> Module {
-        unimplemented()
-    }
+    // Sections and Modules are parsed in parse_module.swift
     
     
 }
