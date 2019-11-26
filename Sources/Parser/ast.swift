@@ -164,7 +164,7 @@ struct Function {
 }
 
 
-public struct Module {
+public struct Module: CustomStringConvertible {
     let types: [FuncType]
     let funcs: [Function]
     let tables: [TableType]
@@ -175,4 +175,8 @@ public struct Module {
     let start: FuncIdx?
     let imports: [Import]
     let exports: [Export]
+    
+    public var description: String {
+        "Types:\n\(types)\n\nFuncs:\n\(funcs)\n\nTables:\n\(tables)\n\nMems:\n\(mems)\n\nGlobals:\n\(globals)\n\nElems:\n\(elems)\n\nData:\n\(data)\n\nStart:\n\(String(describing: start))\n\nImports:\n\(imports)\n\nExports:\n\(exports)"
+    }
 }

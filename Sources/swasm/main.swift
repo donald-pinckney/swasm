@@ -5,4 +5,4 @@ let fileData = try Data(contentsOf: URL(fileURLWithPath: "/Users/donaldpinckney/
 var data = [UInt8](repeating: 0, count: fileData.count)
 fileData.copyBytes(to: &data, count: fileData.count)
 
-print(parseModule(stream: InMemoryBytes(bytes: data)))
+try! print(parseModule(stream: InMemoryBytes(bytes: data)).get())
