@@ -33,7 +33,7 @@ extension WasmParser {
         repeat {
             b = try byte()
             result |= Int64(0x7F & b) << shift
-            shift += 7
+            shift += 6
         } while 0x80 & b != 0
         
         if shift < size && (0x40 & b != 0) {
