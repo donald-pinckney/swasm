@@ -1,6 +1,7 @@
 import XCTest
 
 import swasmTests
+import parserTests
 
 var tests = [XCTestCaseEntry]()
 tests += swasmTests.allTests()
