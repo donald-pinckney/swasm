@@ -17,9 +17,17 @@ public enum ParseError: Error {
     case invalidImportDescriptor(d: UInt8)
     case invalidExportDescriptor(d: UInt8)
     case mismatchedCodeAndFuncSectionLengths(codeLen: Int, funcLen: Int)
+    case unknownError(message: String)
 }
 
-public func parseModule(stream: ByteStream) throws -> Result<Module, ParseError> {
-    unimplemented()
+public func parseModule(stream: ByteStream) -> Result<Module, ParseError> {
+    let parser = WasmParser(stream: stream)
+    do {
+        return .success(try parser.module())
+    } catch let err as ParseError {
+        return .failure(err)
+    } catch {
+        return .failure(.unknownError(message: "\(error)"))
+    }
 }
 
