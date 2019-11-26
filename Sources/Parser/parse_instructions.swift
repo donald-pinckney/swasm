@@ -35,7 +35,9 @@ extension WasmParser {
     
     
     func memarg() throws -> MemArg {
-        unimplemented()
+        let a = try u32()
+        let o = try u32()
+        return MemArg(align: a, offset: o)
     }
     
     

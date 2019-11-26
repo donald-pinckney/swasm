@@ -96,7 +96,8 @@ public struct LabelIdx {
 }
 
 public struct MemArg {
-    
+    let align: UInt32
+    let offset: UInt32
 }
 
 public enum Instr {
