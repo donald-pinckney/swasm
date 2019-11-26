@@ -31,21 +31,9 @@ func opcode2<T, U>(_ instr: @escaping (T, U) -> Instr, nonterminal1: @escaping (
 
 
 extension WasmParser {
-    func labelidx() throws -> LabelIndex {
-        unimplemented()
-    }
-    func funcidx() throws -> FuncIdx {
-        unimplemented()
-    }
-    func typeidx() throws -> TypeIdx {
-        unimplemented()
-    }
-    func localidx() throws -> LocalIdx {
-        unimplemented()
-    }
-    func globalidx() throws -> GlobalIdx {
-        unimplemented()
-    }
+    // MARK: Instructions
+    
+    
     func memarg() throws -> MemArg {
         unimplemented()
     }

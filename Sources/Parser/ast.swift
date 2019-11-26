@@ -72,24 +72,27 @@ public struct GlobalType {
     let valType: ValueType
 }
 
-public struct LabelIndex {
-    
-}
-
-public struct FuncIdx {
-    
-}
 
 public struct TypeIdx {
-    
+    let x: UInt32
 }
-
-public struct LocalIdx {
-    
+public struct FuncIdx {
+    let x: UInt32
 }
-
+public struct TableIdx {
+    let x: UInt32
+}
+public struct MemIdx {
+    let x: UInt32
+}
 public struct GlobalIdx {
-    
+    let x: UInt32
+}
+public struct LocalIdx {
+    let x: UInt32
+}
+public struct LabelIdx {
+    let l: UInt32
 }
 
 public struct MemArg {
@@ -100,7 +103,7 @@ public enum Instr {
     // MARK: Control Instructions
     case unreachable, nop, `return`
     case block(BlockType, [Instr]), loop(BlockType, [Instr]), `if`(BlockType, [Instr], [Instr])
-    case br(LabelIndex), brIf(LabelIndex), brTable([LabelIndex], LabelIndex)
+    case br(LabelIdx), brIf(LabelIdx), brTable([LabelIdx], LabelIdx)
     case call(FuncIdx)
     case callIndirect(TypeIdx)
     
