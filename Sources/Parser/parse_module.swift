@@ -11,7 +11,7 @@ extension WasmParser {
     // MARK: Indices
     
     func typeidx() throws -> TypeIdx {
-        TypeIdx(x: try u32())
+        TypeIdx(try u32())
     }
     func funcidx() throws -> FuncIdx {
         FuncIdx(x: try u32())
@@ -41,12 +41,12 @@ extension WasmParser {
         case Function([TypeIdx])
         case Table([TableType])
         case Memory([MemType])
-        case Global([(type: GlobalType, init: Expr)])
+        case Global([(type: GlobalType, initExpr: Expr)])
         case Export([Export])
         case Start(FuncIdx)
-        case Element([(table: TableIdx, offset: Expr, init: [FuncIdx])])
+        case Element([(table: TableIdx, offset: Expr, initIdxs: [FuncIdx])])
         case Code([([ValueType], Expr)])
-        case Data([(data: MemIdx, offset: Expr, init: [UInt8])])
+        case Data([(data: MemIdx, offset: Expr, initBytes: [UInt8])])
     }
     
     func customSection(size: UInt32) throws -> Section {
@@ -209,12 +209,12 @@ extension WasmParser {
         var funcsec: [TypeIdx] = []
         var tablesec: [TableType] = []
         var memsec: [MemType] = []
-        var globalsec: [(type: GlobalType, init: Expr)] = []
+        var globalsec: [(type: GlobalType, initExpr: Expr)] = []
         var exportsec: [Export] = []
         var startsec: FuncIdx? = nil
-        var elemsec: [(table: TableIdx, offset: Expr, init: [FuncIdx])] = []
+        var elemsec: [(table: TableIdx, offset: Expr, initIdxs: [FuncIdx])] = []
         var codesec: [([ValueType], Expr)] = []
-        var datasec: [(data: MemIdx, offset: Expr, init: [UInt8])] = []
+        var datasec: [(data: MemIdx, offset: Expr, initBytes: [UInt8])] = []
         
         while let sec = try section() {
             switch sec {

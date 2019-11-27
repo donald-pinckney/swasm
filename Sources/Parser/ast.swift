@@ -41,17 +41,35 @@ public enum BlockType {
 }
 
 public struct FuncType {
-    let from: [ValueType]
-    let to: [ValueType]
+    public let from: [ValueType]
+    public let to: [ValueType]
 }
 
 public enum Limits {
     case Min(UInt32)
     case MinMax(UInt32, UInt32)
+    
+    public func getMin() -> UInt32 {
+        switch self {
+        case .Min(let m):
+            return m
+        case .MinMax(let m, _):
+            return m
+        }
+    }
+    
+    public func getMax() -> UInt32? {
+        switch self {
+        case .Min(_):
+            return nil
+        case .MinMax(_, let M):
+            return M
+        }
+    }
 }
 
 public struct MemType {
-    let limits: Limits
+    public let limits: Limits
 }
 
 public enum ElemType {
@@ -59,7 +77,7 @@ public enum ElemType {
 }
 
 public struct TableType {
-    let limits: Limits
+    public let limits: Limits
     let elemType: ElemType
 }
 
@@ -68,31 +86,33 @@ public enum Mut {
 }
 
 public struct GlobalType {
-    let mut: Mut
-    let valType: ValueType
+    public let mut: Mut
+    public let valType: ValueType
 }
 
 
-public struct TypeIdx {
-    let x: UInt32
-}
+public typealias TypeIdx = Int
+
+//public struct TypeIdx {
+//    let x: UInt32
+//}
 public struct FuncIdx {
-    let x: UInt32
+    public let x: UInt32
 }
 public struct TableIdx {
-    let x: UInt32
+    public let x: UInt32
 }
 public struct MemIdx {
-    let x: UInt32
+    public let x: UInt32
 }
 public struct GlobalIdx {
-    let x: UInt32
+    public let x: UInt32
 }
 public struct LocalIdx {
-    let x: UInt32
+    public let x: UInt32
 }
 public struct LabelIdx {
-    let l: UInt32
+    public let l: UInt32
 }
 
 public struct MemArg {
@@ -136,47 +156,47 @@ public enum Instr {
 }
 
 public struct Expr {
-    let instrs: [Instr]
+    public let instrs: [Instr]
 }
 
 enum ImportDescription {
     case Func(TypeIdx), Table(TableType), Mem(MemType), Global(GlobalType)
 }
-struct Import {
+public struct Import {
     let moduleName: String
     let name: String
     let importDescription: ImportDescription
 }
 
-enum ExportDescription {
+public enum ExportDescription {
     case Func(FuncIdx), Table(TableIdx), Mem(MemIdx), Global(GlobalIdx)
 }
-struct Export {
-    let name: String
-    let exportDescription: ExportDescription
+public struct Export {
+    public let name: String
+    public let exportDescription: ExportDescription
 }
 
 
-struct Function {
-    let type: TypeIdx
+public struct Function {
+    public let type: TypeIdx
     let locals: [ValueType]
     let body: Expr
 }
 
 
 public struct Module: CustomStringConvertible {
-    let types: [FuncType]
-    let funcs: [Function]
-    let tables: [TableType]
-    let mems: [MemType]
-    let globals: [(type: GlobalType, init: Expr)]
-    let elems: [(table: TableIdx, offset: Expr, init: [FuncIdx])]
-    let data: [(data: MemIdx, offset: Expr, init: [UInt8])]
-    let start: FuncIdx?
-    let imports: [Import]
-    let exports: [Export]
+    public let types: [FuncType]
+    public let funcs: [Function]
+    public let tables: [TableType]
+    public let mems: [MemType]
+    public let globals: [(type: GlobalType, initExpr: Expr)]
+    public let elems: [(table: TableIdx, offset: Expr, initIdxs: [FuncIdx])]
+    public let data: [(data: MemIdx, offset: Expr, initBytes: [UInt8])]
+    public let start: FuncIdx?
+    public let imports: [Import]
+    public let exports: [Export]
     
     public var description: String {
         "Types:\n\(types)\n\nFuncs:\n\(funcs)\n\nTables:\n\(tables)\n\nMems:\n\(mems)\n\nGlobals:\n\(globals)\n\nElems:\n\(elems)\n\nData:\n\(data)\n\nStart:\n\(String(describing: start))\n\nImports:\n\(imports)\n\nExports:\n\(exports)"
-    }
+    }    
 }
