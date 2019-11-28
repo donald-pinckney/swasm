@@ -19,7 +19,7 @@ public typealias TableAddr = Addr
 public typealias MemAddr = Addr
 public typealias GlobalAddr = Addr
 
-typealias HostFunc = Void // Currently host funcs are not supported
+typealias HostFunc = ([Value]) -> [Value] // Currently host funcs are not supported
 
 enum ValidationError: Error {
     case importCountNotMatched(given: Int, expected: Int)
@@ -43,6 +43,19 @@ public enum Value {
     case i64(Int64)
     case f32(Float32)
     case f64(Float64)
+    
+    init(zeroValueFor: ValueType) {
+        switch zeroValueFor {
+        case .i32:
+            self = .i32(0)
+        case .i64:
+            self = .i64(0)
+        case .f32:
+            self = .f32(0)
+        case .f64:
+            self = .f64(0)
+        }
+    }
     
     func assert_i32() -> Int32 {
         switch self {
@@ -173,7 +186,7 @@ struct Store {
         return a
     }
     
-    mutating func allocHostFunc(t: FuncType, h: HostFunc) -> FuncAddr {
+    mutating func allocHostFunc(t: FuncType, h: @escaping HostFunc) -> FuncAddr {
         let a = funcs.count
         let fInst = FuncInst.HostFunction(type: t, hostfunc: h)
         funcs.append(fInst)
@@ -293,18 +306,20 @@ struct Store {
         
         let moduleinst_im = ModuleInst(types: [], funcAddrs: [], tableAddrs: [], memAddrs: [], globalAddrs: externglobals(e: externvals), exports: [])
         let F_im = Frame(locals: [], module: moduleinst_im)
+        let A_im = Activation(n: 0, frame: F_im)
         
         let vals = try module.globals.map { global -> Value in
-            let vm_im = VM(initialStore: self, initialFrames: [F_im])
+            var vm_im = VM(initialStore: self, initialActivations: [A_im])
             return try vm_im.evaluateToValue(instrs: global.initExpr.instrs)
         }
 
         let moduleinst = allocModule(module: module, externVals: externvals, vals: vals)
         
         let F = Frame(locals: [], module: moduleinst)
-        
+        let A = Activation(n: 0, frame: F)
+
         let eos = try module.elems.map { elem -> Int32 in
-            let vm_eo = VM(initialStore: self, initialFrames: [F])
+            var vm_eo = VM(initialStore: self, initialActivations: [A])
             let eo = try vm_eo.evaluateToValue(instrs: elem.offset.instrs).assert_i32()
             let tableaddr = moduleinst.tableAddrs[Int(elem.table.x)]
             let tableinst = self.tables[tableaddr]
@@ -316,7 +331,7 @@ struct Store {
         }
         
         let dos = try module.data.map { data -> Int32 in
-            let vm_do = VM(initialStore: self, initialFrames: [F])
+            var vm_do = VM(initialStore: self, initialActivations: [A])
             let _do = try vm_do.evaluateToValue(instrs: data.offset.instrs).assert_i32()
             let memaddr = moduleinst.memAddrs[Int(data.data.x)]
             let meminst = self.mems[memaddr]
@@ -348,7 +363,7 @@ struct Store {
         }
         
         
-        let vm = VM(initialStore: self, initialFrames: [])
+        var vm = VM(initialStore: self, initialActivations: [])
         if let start = module.start {
             let startFuncAddr = moduleinst.funcAddrs[Int(start.x)]
             let _ = try vm.invoke(funcAddr: startFuncAddr, args: [])

@@ -28,14 +28,14 @@ public enum ValueType {
 
 public enum BlockType {
     case empty
-    case result(ValueType)
+    case result([ValueType])
     
     init(_ b: UInt8) throws {
         switch b {
         case 0x40:
-            self = .empty
+            self = .result([])
         default:
-            self = .result(try ValueType(b))
+            self = .result([try ValueType(b)])
         }
     }
 }
@@ -179,8 +179,8 @@ public struct Export {
 
 public struct Function {
     public let type: TypeIdx
-    let locals: [ValueType]
-    let body: Expr
+    public let locals: [ValueType]
+    public let body: Expr
 }
 
 
