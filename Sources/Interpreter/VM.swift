@@ -72,8 +72,22 @@ public struct VM {
         return try invokeUnchecked(funcAddr: funcAddr, args: args)
     }
     
-    mutating func evaluate() throws {
-        
+    private mutating func evaluate(instruction: Instr) throws {
+        switch instruction {
+        case .i32Const(let x):
+            values.append(Value.i32(x))
+        default:
+            unimplemented()
+        }
+    }
+    
+    private mutating func evaluate() throws {
+        while ip < code.count {
+            let instr = code[ip]
+            ip += 1
+            
+            try evaluate(instruction: instr)
+        }
     }
     
     mutating func evaluate(instrs: [Instr]) throws -> [Value] {
